@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Shield, TrendingUp, Sparkles, Award } from 'lucide-react';
+import { BarChart3, Shield, Sparkles, Award } from 'lucide-react';
 
 const Header = () => {
   return (
