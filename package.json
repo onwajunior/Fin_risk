@@ -10,7 +10,6 @@
     "build": "npm run build:frontend",
     "build:frontend": "cd frontend && npm run build",
     "install:all": "npm install && cd frontend && npm install",
-    "postinstall": "npm run build:frontend",
     "health": "curl -f http://localhost:3001/api/health || exit 1",
     "deploy:vercel": "vercel --prod",
     "clean": "rm -rf node_modules frontend/node_modules frontend/build",

@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "financial-risk-analyzer",
+  "installCommand": "npm install",
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/build",
   "rewrites": [
