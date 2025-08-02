@@ -98,20 +98,24 @@ app.use('/api/*', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Financial Risk Analyzer server running on port ${PORT}`);
-  console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 API: http://localhost:${PORT}/api`);
-  
-  // Check required environment variables
-  const requiredEnvVars = ['OPENAI_API_KEY'];
-  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-  
-  if (missingVars.length > 0) {
-    console.warn(`⚠️  Missing environment variables: ${missingVars.join(', ')}`);
-  } else {
-    console.log('✅ All required environment variables are set');
-  }
-});
-
-module.exports = app;
+// For Vercel deployment, export the app; for local development, start server
+if (process.env.VERCEL || require.main !== module) {
+  module.exports = app;
+} else {
+  // Local development server
+  app.listen(PORT, () => {
+    console.log(`🚀 Financial Risk Analyzer server running on port ${PORT}`);
+    console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔗 API: http://localhost:${PORT}/api`);
+    
+    // Check required environment variables
+    const requiredEnvVars = ['OPENAI_API_KEY'];
+    const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+    
+    if (missingVars.length > 0) {
+      console.warn(`⚠️  Missing environment variables: ${missingVars.join(', ')}`);
+    } else {
+      console.log('✅ All required environment variables are set');
+    }
+  });
+}

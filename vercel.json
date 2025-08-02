@@ -1,43 +1,20 @@
 {
   "version": 2,
   "name": "financial-risk-analyzer",
-  "builds": [
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/build",
+  "rewrites": [
     {
-      "src": "package.json",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
+      "source": "/api/(.*)",
+      "destination": "/api"
     }
   ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/static/(.*)",
-      "dest": "/frontend/build/static/$1"
-    },
-    {
-      "src": "/(.*\\.(js|css|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))",
-      "dest": "/frontend/build/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/build/index.html"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
   "functions": {
-    "server.js": {
+    "api/index.js": {
       "maxDuration": 30
     }
+  },
+  "env": {
+    "NODE_ENV": "production"
   }
 }
