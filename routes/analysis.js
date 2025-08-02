@@ -3,6 +3,7 @@ const multer = require('multer');
 const csv = require('csv-parser');
 const fs = require('fs');
 const path = require('path');
+const { Readable } = require('stream');
 
 // Import services
 const financialDataService = require('../services/financialDataService');
@@ -11,9 +12,9 @@ const aiAnalysisService = require('../services/aiAnalysisService');
 
 const router = express.Router();
 
-// Configure multer for file uploads
+// Configure multer for file uploads (serverless-compatible)
 const upload = multer({
-  dest: 'uploads/',
+  storage: multer.memoryStorage(), // Use memory storage for serverless
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB limit
   },
@@ -117,10 +118,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
       });
     }
 
-    const companies = await parseCSVFile(req.file.path);
-    
-    // Clean up uploaded file
-    fs.unlinkSync(req.file.path);
+    const companies = await parseCSVFile(req.file.buffer);
 
     if (companies.length === 0) {
       return res.status(400).json({
@@ -268,14 +266,15 @@ async function analyzeCompany(companyInput) {
 }
 
 /**
- * Parse CSV file and extract company names/tickers
+ * Parse CSV buffer and extract company names/tickers
  */
-async function parseCSVFile(filePath) {
+async function parseCSVFile(buffer) {
   return new Promise((resolve, reject) => {
     const companies = [];
     const seenCompanies = new Set();
 
-    fs.createReadStream(filePath)
+    // Create readable stream from buffer for serverless compatibility
+    Readable.from(buffer)
       .pipe(csv({
         headers: false, // Don't assume headers
         skipEmptyLines: true
